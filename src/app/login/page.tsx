@@ -45,12 +45,13 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen w-full items-center justify-center bg-muted/30">
-      <div className="w-full max-w-sm mx-auto p-8">
+    <div className="flex min-h-screen w-full items-center justify-center bg-[oklch(0.98_0_0)]">
+      <div className="w-full max-w-sm mx-auto">
+        <div className="bg-background border border-border rounded-lg p-8">
         {/* Logo */}
         <div className="flex items-center justify-center gap-2.5 mb-8">
-          <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
-            <Sparkles className="h-5 w-5 text-primary-foreground" />
+          <div className="w-10 h-10 rounded-lg bg-foreground flex items-center justify-center">
+            <Sparkles className="h-5 w-5 text-background" />
           </div>
           <div>
             <h1 className="text-xl font-bold tracking-tight">InfoFlow</h1>
@@ -106,6 +107,7 @@ export default function LoginPage() {
             {isSignUp ? "Sign in" : "Sign up"}
           </button>
         </p>
+        </div>
       </div>
     </div>
   );

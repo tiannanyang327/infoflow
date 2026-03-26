@@ -36,18 +36,16 @@ export function ArticleCard({ article, tags, onDelete }: ArticleCardProps) {
 
   return (
     <Link href={`/article/${article.id}`} className="block group">
-      <div className="p-4 rounded-xl border border-border/50 bg-card hover:border-border hover:shadow-sm transition-all duration-200 relative">
+      <div className="p-4 rounded-lg border border-border bg-card hover:bg-[oklch(0.985_0_0)] transition-all duration-150 relative">
         <div className="flex items-start gap-3">
           {/* Source indicator */}
-          <div
-            className={`flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center text-sm ${source.color}`}
-          >
+          <div className="flex-shrink-0 w-8 h-8 rounded-md bg-muted flex items-center justify-center text-sm">
             {source.emoji}
           </div>
 
           <div className="flex-1 min-w-0">
             {/* Title */}
-            <h3 className="font-medium text-sm leading-snug line-clamp-2 group-hover:text-primary transition-colors pr-6">
+            <h3 className="font-medium text-[13px] leading-snug line-clamp-2 pr-6">
               {article.title || "Untitled"}
             </h3>
 
@@ -64,7 +62,7 @@ export function ArticleCard({ article, tags, onDelete }: ArticleCardProps) {
                 <Badge
                   key={tag}
                   variant="secondary"
-                  className="text-[10px] px-1.5 py-0 h-5 font-normal"
+                  className="text-[10px] px-2 py-0 h-[18px] font-normal rounded-sm bg-muted border-0"
                 >
                   {tag}
                 </Badge>

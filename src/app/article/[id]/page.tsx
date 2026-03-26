@@ -73,14 +73,14 @@ export default function ArticlePage({
       {/* Left: Article content */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Nav */}
-        <div className="flex items-center gap-3 px-6 py-3 border-b border-border/50">
+        <div className="flex items-center gap-3 px-6 py-3 border-b border-border">
           <Link href="/">
             <Button variant="ghost" size="icon" className="h-8 w-8">
               <ArrowLeft className="h-4 w-4" />
             </Button>
           </Link>
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs ${source.color}`}>
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-sm text-xs bg-muted text-muted-foreground">
               {source.emoji} {source.label}
             </span>
             {article.author && (
@@ -113,7 +113,7 @@ export default function ArticlePage({
 
         {/* Content */}
         <div className="flex-1 overflow-y-auto px-8 py-6 max-w-3xl">
-          <h1 className="text-2xl font-bold tracking-tight leading-tight mb-4">
+          <h1 className="text-[1.75rem] font-bold tracking-tight leading-[1.2] mb-5">
             {article.title}
           </h1>
 
@@ -130,8 +130,8 @@ export default function ArticlePage({
 
           {/* AI Summary */}
           {article.summary && (
-            <div className="bg-muted/50 rounded-xl p-4 mb-6">
-              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2">
+            <div className="bg-[oklch(0.98_0_0)] border border-border rounded-lg p-5 mb-8">
+              <p className="text-[11px] font-mono font-medium text-muted-foreground uppercase tracking-widest mb-2">
                 AI Summary
               </p>
               <p className="text-sm leading-relaxed">{article.summary}</p>
@@ -141,13 +141,13 @@ export default function ArticlePage({
           {/* Key Points */}
           {keyPoints.length > 0 && (
             <div className="mb-6">
-              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3">
+              <p className="text-[11px] font-mono font-medium text-muted-foreground uppercase tracking-widest mb-3">
                 Key Points
               </p>
               <ul className="space-y-2">
                 {keyPoints.map((point, i) => (
                   <li key={i} className="flex gap-2 text-sm">
-                    <span className="flex-shrink-0 w-5 h-5 rounded-full bg-primary/10 text-primary text-xs flex items-center justify-center font-medium">
+                    <span className="flex-shrink-0 w-5 h-5 rounded-full bg-foreground text-background text-[10px] flex items-center justify-center font-semibold">
                       {i + 1}
                     </span>
                     <span className="leading-relaxed">{point}</span>
@@ -159,15 +159,15 @@ export default function ArticlePage({
 
           {/* Highlights section */}
           {highlights.length > 0 && (
-            <div className="mb-6 bg-yellow-50/80 border border-yellow-200/60 rounded-xl p-4">
-              <p className="text-xs font-medium text-yellow-700 uppercase tracking-wider mb-3">
+            <div className="mb-8 bg-[oklch(0.98_0_0)] border border-border rounded-lg p-5">
+              <p className="text-[11px] font-mono font-medium text-muted-foreground uppercase tracking-widest mb-3">
                 My Highlights · {highlights.length}
               </p>
               <ul className="space-y-2.5">
                 {highlights.map((hl, i) => (
                   <li key={i} className="flex gap-2.5 text-sm">
-                    <span className="flex-shrink-0 w-1 rounded-full bg-yellow-400 mt-1" style={{ minHeight: 16 }} />
-                    <span className="leading-relaxed text-yellow-900">{hl}</span>
+                    <span className="flex-shrink-0 w-1 rounded-full bg-foreground mt-1" style={{ minHeight: 16 }} />
+                    <span className="leading-relaxed">{hl}</span>
                   </li>
                 ))}
               </ul>
@@ -179,7 +179,7 @@ export default function ArticlePage({
           {/* Original content with highlighting */}
           {article.content && (
             <div>
-              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3">
+              <p className="text-[11px] font-mono font-medium text-muted-foreground uppercase tracking-widest mb-3">
                 Original Content
                 <span className="ml-2 font-normal normal-case tracking-normal">— 选中文字可高亮</span>
               </p>
@@ -196,7 +196,7 @@ export default function ArticlePage({
       </div>
 
       {/* Right: Chat panel — fixed height, internal scroll */}
-      <div className="w-96 border-l border-border/50 flex-shrink-0 h-screen sticky top-0">
+      <div className="w-96 border-l border-border flex-shrink-0 h-screen sticky top-0">
         <ChatPanel
           contextType="article"
           contextId={id}

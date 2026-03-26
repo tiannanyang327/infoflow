@@ -4,6 +4,7 @@
   "version": "0.1.0",
   "description": "Save any web content to InfoFlow",
   "permissions": ["activeTab", "scripting"],
+  "host_permissions": ["https://infoflow-two.vercel.app/*"],
   "action": {
     "default_popup": "popup.html"
   },

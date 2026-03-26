@@ -90,12 +90,12 @@ export function HighlightableContent({
       toolbar.innerHTML = `
         <div style="display:flex;gap:4px;">
           <button data-action="highlight" class="flex items-center gap-1.5 h-8 px-3 text-xs font-medium rounded-full shadow-lg transition-opacity"
-                  style="background:#18181b;color:white;">
+                  style="background:oklch(0.145 0 0);color:white;">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 11-6 6v3h9l3-3"/><path d="m22 12-4.6 4.6a2 2 0 0 1-2.8 0l-5.2-5.2a2 2 0 0 1 0-2.8L14 4"/></svg>
             高亮
           </button>
           <button data-action="chat" class="flex items-center gap-1.5 h-8 px-3 text-xs font-medium rounded-full shadow-lg transition-opacity"
-                  style="background:#6366f1;color:white;">
+                  style="background:oklch(0.45 0 0);color:white;">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
             追问
           </button>
@@ -108,7 +108,7 @@ export function HighlightableContent({
     } else {
       toolbar.innerHTML = `
         <button class="flex items-center gap-1.5 h-8 px-3 text-xs font-medium rounded-full shadow-lg transition-opacity"
-                style="background:#dc2626;color:white;">
+                style="background:oklch(0.55 0.12 20);color:white;">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
           取消高亮
         </button>`;
@@ -170,7 +170,7 @@ export function HighlightableContent({
     for (const hl of sorted) {
       const escaped = hl.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
       const placeholder = `__HL${placeholders.length}__`;
-      const html = `<mark class="bg-yellow-200/80 rounded-sm px-0.5 cursor-pointer hover:bg-yellow-300/80 transition-colors">${hl}</mark>`;
+      const html = `<mark class="bg-foreground/10 rounded-sm px-0.5 cursor-pointer hover:bg-foreground/15 transition-colors">${hl}</mark>`;
       placeholders.push({ placeholder, html });
       result = result.replace(new RegExp(escaped, "g"), placeholder);
     }

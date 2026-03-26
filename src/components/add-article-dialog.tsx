@@ -146,7 +146,7 @@ export function AddArticleDialog({ onSuccess }: AddArticleDialogProps) {
                 autoFocus
               />
               {pasteWarning && (
-                <div className="flex items-start gap-2 p-3 rounded-lg bg-amber-50 border border-amber-200 text-amber-800">
+                <div className="flex items-start gap-2 p-3 rounded-md bg-muted border border-border text-foreground">
                   <AlertTriangle className="h-4 w-4 flex-shrink-0 mt-0.5" />
                   <div className="text-xs">
                     <p className="font-medium">{pasteWarning}</p>
@@ -154,7 +154,7 @@ export function AddArticleDialog({ onSuccess }: AddArticleDialogProps) {
                       type="button"
                       variant="outline"
                       size="sm"
-                      className="mt-2 h-7 text-xs border-amber-300 text-amber-700 hover:bg-amber-100"
+                      className="mt-2 h-7 text-xs"
                       onClick={switchToManualWithUrl}
                     >
                       切换到 Paste Text
@@ -172,7 +172,7 @@ export function AddArticleDialog({ onSuccess }: AddArticleDialogProps) {
                 disabled={loading}
               />
               {url && needsManualPaste(url) && (
-                <div className="text-xs text-muted-foreground bg-muted/50 rounded-lg px-3 py-2">
+                <div className="text-xs text-muted-foreground bg-muted rounded-md px-3 py-2">
                   🔗 来源链接已保留：<span className="text-foreground">{url.slice(0, 50)}...</span>
                   <br />请在下方粘贴内容，AI 会自动分析。
                 </div>

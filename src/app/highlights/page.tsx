@@ -19,12 +19,12 @@ interface HighlightArticle {
 
 // Color palette for roundtable participants
 const avatarColors = [
-  "bg-emerald-100",
-  "bg-blue-100",
-  "bg-purple-100",
-  "bg-amber-100",
-  "bg-rose-100",
-  "bg-cyan-100",
+  "bg-muted",
+  "bg-muted",
+  "bg-muted",
+  "bg-muted",
+  "bg-muted",
+  "bg-muted",
 ];
 
 function HighlightsContent() {
@@ -89,7 +89,7 @@ function HighlightsContent() {
 
       <main className="flex-1 flex flex-col min-w-0">
         {/* Header */}
-        <header className="px-6 py-4 border-b border-border/50">
+        <header className="px-6 py-4 border-b border-border">
           <div className="flex items-center gap-2">
             <Highlighter className="h-4 w-4 text-muted-foreground" />
             <h1 className="text-lg font-semibold tracking-tight">Highlights</h1>
@@ -100,13 +100,13 @@ function HighlightsContent() {
         </header>
 
         {/* Tag chips */}
-        <div className="flex gap-1.5 px-6 py-3 flex-wrap border-b border-border/30">
+        <div className="flex gap-1.5 px-6 py-3 flex-wrap border-b border-border">
           <button
             onClick={() => handleTagClick(null)}
             className={`px-3 py-1 rounded-full text-xs transition-colors ${
               !activeTopic
-                ? "bg-primary text-primary-foreground"
-                : "bg-muted text-muted-foreground hover:text-foreground"
+                ? "bg-foreground text-background"
+                : "border border-border bg-transparent text-muted-foreground hover:text-foreground hover:border-foreground/30"
             }`}
           >
             All
@@ -117,8 +117,8 @@ function HighlightsContent() {
               onClick={() => handleTagClick(tag)}
               className={`px-3 py-1 rounded-full text-xs transition-colors ${
                 activeTopic === tag
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-muted text-muted-foreground hover:text-foreground"
+                  ? "bg-foreground text-background"
+                  : "border border-border bg-transparent text-muted-foreground hover:text-foreground hover:border-foreground/30"
               }`}
             >
               {tag}
@@ -197,7 +197,7 @@ function NoteFlowView({ articles }: { articles: HighlightArticle[] }) {
             {/* Highlights */}
             {article.keyPoints.map((point, i) => (
               <div key={i} className="flex gap-3 py-2">
-                <div className="w-[3px] rounded-full bg-border flex-shrink-0" />
+                <div className="w-[2px] rounded-full bg-foreground/20 flex-shrink-0" />
                 <div>
                   <p className="text-sm leading-relaxed text-foreground/85">
                     {point}
@@ -275,8 +275,8 @@ function RoundtableView({
       </button>
 
       {/* Roundtable banner */}
-      <div className="bg-card border border-border/50 rounded-xl p-5 mb-6">
-        <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-1">
+      <div className="bg-[oklch(0.98_0_0)] border border-border rounded-lg p-6 mb-8">
+        <p className="text-[11px] font-mono font-medium text-muted-foreground uppercase tracking-widest mb-1">
           # {topic}
         </p>
         <h2 className="text-base font-semibold tracking-tight">
@@ -287,8 +287,7 @@ function RoundtableView({
           {participants.map((p, i) => (
             <span
               key={i}
-              className={`w-6 h-6 rounded-md flex items-center justify-center text-xs ${p.color} ${i > 0 ? "-ml-1" : ""}`}
-              style={{ border: "2px solid white" }}
+              className={`w-6 h-6 rounded-md flex items-center justify-center text-xs ${p.color} ${i > 0 ? "-ml-1" : ""} ring-2 ring-background`}
             >
               {p.emoji}
             </span>

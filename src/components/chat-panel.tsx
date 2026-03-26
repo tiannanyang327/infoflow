@@ -117,7 +117,7 @@ export function ChatPanel({ contextType, contextId, placeholder, injectedMessage
   return (
     <div className="flex flex-col h-full">
       {/* Header */}
-      <div className="px-4 py-3 border-b border-border/50">
+      <div className="px-5 py-4 border-b border-border">
         <div className="flex items-center gap-2">
           <Sparkles className="h-4 w-4 text-primary" />
           <span className="text-sm font-medium">AI Chat</span>
@@ -145,7 +145,7 @@ export function ChatPanel({ contextType, contextId, placeholder, injectedMessage
                         }
                       }, 50);
                     }}
-                    className="block w-full text-left text-sm px-3 py-2 rounded-lg border border-border/60 text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
+                    className="block w-full text-left text-[13px] px-3.5 py-2.5 rounded-md border border-border text-muted-foreground hover:bg-[oklch(0.985_0_0)] hover:text-foreground transition-colors"
                   >
                     {q}
                   </button>
@@ -154,19 +154,19 @@ export function ChatPanel({ contextType, contextId, placeholder, injectedMessage
                 <>
                   <button
                     onClick={() => setInput("这篇内容的核心观点是什么？")}
-                    className="block w-full text-left text-sm px-3 py-2 rounded-lg border border-border/60 text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
+                    className="block w-full text-left text-[13px] px-3.5 py-2.5 rounded-md border border-border text-muted-foreground hover:bg-[oklch(0.985_0_0)] hover:text-foreground transition-colors"
                   >
                     这篇内容的核心观点是什么？
                   </button>
                   <button
                     onClick={() => setInput("有哪些可以借鉴的做法？")}
-                    className="block w-full text-left text-sm px-3 py-2 rounded-lg border border-border/60 text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
+                    className="block w-full text-left text-[13px] px-3.5 py-2.5 rounded-md border border-border text-muted-foreground hover:bg-[oklch(0.985_0_0)] hover:text-foreground transition-colors"
                   >
                     有哪些可以借鉴的做法？
                   </button>
                   <button
                     onClick={() => setInput("用一句话总结这篇内容")}
-                    className="block w-full text-left text-sm px-3 py-2 rounded-lg border border-border/60 text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
+                    className="block w-full text-left text-[13px] px-3.5 py-2.5 rounded-md border border-border text-muted-foreground hover:bg-[oklch(0.985_0_0)] hover:text-foreground transition-colors"
                   >
                     用一句话总结这篇内容
                   </button>
@@ -182,7 +182,7 @@ export function ChatPanel({ contextType, contextId, placeholder, injectedMessage
                   className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center ${
                     msg.role === "user"
                       ? "bg-muted"
-                      : "bg-primary/10"
+                      : "bg-muted"
                   }`}
                 >
                   {msg.role === "user" ? (
@@ -203,7 +203,7 @@ export function ChatPanel({ contextType, contextId, placeholder, injectedMessage
       </div>
 
       {/* Input */}
-      <form onSubmit={handleSubmit} className="p-3 border-t border-border/50">
+      <form onSubmit={handleSubmit} className="p-4 border-t border-border">
         <div className="flex gap-2">
           <Textarea
             ref={inputRef}

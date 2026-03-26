@@ -27,14 +27,14 @@ export function Sidebar() {
   }, [pathname]);
 
   return (
-    <aside className="w-56 flex-shrink-0 border-r border-border/50 bg-muted/30 flex flex-col">
+    <aside className="w-60 flex-shrink-0 border-r border-border bg-[oklch(0.985_0_0)] flex flex-col">
       {/* Logo */}
-      <div className="p-4 pb-2">
+      <div className="px-5 pt-6 pb-4">
         <Link href="/" className="flex items-center gap-2 group">
-          <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center">
-            <Sparkles className="h-4 w-4 text-primary-foreground" />
+          <div className="w-7 h-7 rounded-md bg-foreground flex items-center justify-center">
+            <Sparkles className="h-4 w-4 text-background" />
           </div>
-          <span className="font-semibold text-sm tracking-tight">InfoFlow</span>
+          <span className="font-semibold text-[13px] tracking-tight">InfoFlow</span>
         </Link>
       </div>
 
@@ -43,10 +43,10 @@ export function Sidebar() {
         <Link
           href="/"
           className={cn(
-            "flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors",
+            "flex items-center gap-2.5 px-3 py-2 rounded-md text-[13px] transition-colors",
             !activeTag && pathname === "/"
-              ? "bg-accent text-accent-foreground font-medium"
-              : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
+              ? "bg-foreground/[0.06] text-foreground font-medium"
+              : "text-muted-foreground hover:text-foreground hover:bg-foreground/[0.04]"
           )}
         >
           <Inbox className="h-4 w-4" />
@@ -55,10 +55,10 @@ export function Sidebar() {
         <Link
           href="/highlights"
           className={cn(
-            "flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors",
+            "flex items-center gap-2.5 px-3 py-2 rounded-md text-[13px] transition-colors",
             pathname === "/highlights"
-              ? "bg-accent text-accent-foreground font-medium"
-              : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
+              ? "bg-foreground/[0.06] text-foreground font-medium"
+              : "text-muted-foreground hover:text-foreground hover:bg-foreground/[0.04]"
           )}
         >
           <Highlighter className="h-4 w-4" />
@@ -67,8 +67,8 @@ export function Sidebar() {
       </nav>
 
       {/* Tags */}
-      <div className="px-4 py-2">
-        <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
+      <div className="px-5 py-2">
+        <p className="text-[11px] font-medium text-muted-foreground/70 uppercase tracking-widest">
           Topics
         </p>
       </div>
@@ -80,10 +80,10 @@ export function Sidebar() {
               key={tag.id}
               href={tag.name === activeTag ? "/" : `/?tag=${encodeURIComponent(tag.name)}`}
               className={cn(
-                "flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition-colors",
+                "flex items-center gap-2 px-3 py-[7px] rounded-md text-[13px] transition-colors",
                 activeTag === tag.name
-                  ? "bg-accent text-accent-foreground font-medium"
-                  : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
+                  ? "bg-foreground/[0.06] text-foreground font-medium"
+                  : "text-muted-foreground hover:text-foreground hover:bg-foreground/[0.04]"
               )}
             >
               <Hash className="h-3.5 w-3.5 flex-shrink-0" />
