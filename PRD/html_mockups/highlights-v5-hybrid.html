@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Highlights — 方向 A + 圆桌讨论</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', -apple-system, 'Helvetica Neue', sans-serif; background: #f9fafb; color: #1a1a1a; display: flex; height: 100vh; }
+
+  /* Sidebar */
+  .sidebar { width: 220px; flex-shrink: 0; border-right: 1px solid #f0f0f0; background: #fafafa; display: flex; flex-direction: column; padding: 16px 0; }
+  .logo { padding: 0 16px 12px; display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; }
+  .logo-icon { width: 28px; height: 28px; border-radius: 8px; background: #18181b; display: flex; align-items: center; justify-content: center; color: white; font-size: 14px; }
+  .nav-item { display: flex; align-items: center; gap: 8px; padding: 8px 16px; font-size: 13px; color: #888; cursor: pointer; transition: all 0.15s; text-decoration: none; }
+  .nav-item:hover { color: #1a1a1a; background: #f0f0f0; }
+  .nav-item.active { color: #1a1a1a; background: #ececec; font-weight: 500; }
+  .nav-section { padding: 16px 16px 6px; font-size: 10px; font-weight: 600; color: #aaa; text-transform: uppercase; letter-spacing: 0.05em; }
+  .tag-item { display: flex; align-items: center; gap: 8px; padding: 5px 16px; font-size: 13px; color: #888; cursor: pointer; }
+  .tag-item:hover { color: #1a1a1a; }
+  .tag-count { font-size: 10px; color: #bbb; margin-left: auto; }
+
+  /* Main */
+  .main { flex: 1; overflow-y: auto; }
+  .header { padding: 24px 32px 16px; border-bottom: 1px solid #f0f0f0; }
+  .header h1 { font-size: 18px; font-weight: 600; letter-spacing: -0.02em; }
+  .header-meta { font-size: 12px; color: #999; margin-top: 2px; }
+
+  /* Tag chips */
+  .chips { display: flex; gap: 6px; padding: 16px 32px 0; flex-wrap: wrap; }
+  .chip { padding: 4px 12px; border-radius: 100px; font-size: 12px; background: #f0f0f0; color: #666; cursor: pointer; transition: all 0.15s; border: 1px solid transparent; }
+  .chip:hover { background: #e8e8e8; color: #333; }
+  .chip.active { background: #1a1a1a; color: #fff; }
+
+  /* ========== View: All (笔记流) ========== */
+  .view-all { padding: 24px 32px; max-width: 680px; }
+  .article-group { margin-bottom: 32px; }
+  .article-header { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+  .source-icon { width: 20px; height: 20px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 11px; background: #f0f0f0; }
+  .article-title { font-size: 12px; color: #999; font-weight: 400; cursor: pointer; transition: color 0.15s; }
+  .article-title:hover { color: #1a1a1a; }
+  .article-time { font-size: 11px; color: #ccc; margin-left: auto; }
+
+  .highlight { display: flex; gap: 12px; padding: 8px 0; }
+  .highlight-bar { width: 3px; border-radius: 2px; background: #e5e5e5; flex-shrink: 0; }
+  .highlight-text { font-size: 14px; line-height: 1.65; color: #333; }
+  .highlight-tags { display: flex; gap: 4px; margin-top: 6px; }
+  .highlight-tag { font-size: 10px; color: #aaa; background: #f5f5f5; padding: 1px 6px; border-radius: 4px; }
+
+  /* ========== View: Topic (圆桌讨论) ========== */
+  .view-topic { padding: 24px 32px; max-width: 720px; display: none; }
+  .view-topic.active { display: block; }
+
+  .roundtable-banner { padding: 20px 24px; background: #fff; border: 1px solid #f0f0f0; border-radius: 12px; margin-bottom: 24px; }
+  .roundtable-topic-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #999; margin-bottom: 6px; }
+  .roundtable-title { font-size: 17px; font-weight: 600; letter-spacing: -0.01em; }
+  .roundtable-subtitle { font-size: 12px; color: #999; margin-top: 4px; }
+  .participants { display: flex; align-items: center; gap: 4px; margin-top: 10px; }
+  .participant-avatar { width: 22px; height: 22px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 10px; border: 2px solid #fff; }
+  .participant-label { font-size: 11px; color: #bbb; margin-left: 4px; }
+
+  /* Thread */
+  .thread {}
+  .voice { display: flex; gap: 12px; padding: 14px 0; }
+  .voice + .voice { border-top: 1px solid #f8f8f8; }
+  .voice-avatar { width: 28px; height: 28px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; margin-top: 1px; }
+  .voice-body { flex: 1; }
+  .voice-source { font-size: 12px; color: #888; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
+  .voice-source-title { font-weight: 500; color: #666; cursor: pointer; }
+  .voice-source-title:hover { color: #1a1a1a; }
+  .voice-time { font-size: 10px; color: #ccc; }
+  .voice-text { font-size: 14px; line-height: 1.65; color: #2a2a2a; }
+  .voice-text em { font-style: normal; background: linear-gradient(to bottom, transparent 60%, #fef08a 60%); }
+
+  .connection { padding: 2px 0 2px 40px; }
+  .connection-line { display: flex; align-items: center; gap: 8px; font-size: 11px; color: #d4d4d4; }
+  .connection-line::before { content: ''; width: 16px; height: 1px; background: #e8e8e8; }
+  .connection-line::after { content: ''; flex: 1; height: 1px; background: #e8e8e8; }
+
+  .synthesis { margin-top: 20px; padding: 16px 20px; background: #f8faf9; border-radius: 10px; border: 1px solid #e8f0ec; }
+  .synthesis-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: #6b9e82; margin-bottom: 8px; display: flex; align-items: center; gap: 5px; }
+  .synthesis-text { font-size: 13px; line-height: 1.6; color: #3d5a4a; }
+
+  .bg-green { background: #dcfce7; }
+  .bg-blue { background: #dbeafe; }
+  .bg-purple { background: #f3e8ff; }
+  .bg-rose { background: #ffe4e6; }
+
+  /* Back link */
+  .back-link { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; color: #999; cursor: pointer; margin-bottom: 16px; transition: color 0.15s; }
+  .back-link:hover { color: #1a1a1a; }
+
+  /* Tab indicator under header */
+  .view-tabs { display: flex; gap: 0; padding: 0 32px; border-bottom: 1px solid #f0f0f0; }
+  .view-tab { padding: 10px 16px; font-size: 13px; color: #999; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.15s; }
+  .view-tab:hover { color: #666; }
+  .view-tab.active { color: #1a1a1a; font-weight: 500; border-bottom-color: #1a1a1a; }
+</style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<aside class="sidebar">
+  <div class="logo">
+    <div class="logo-icon">✦</div>
+    InfoFlow
+  </div>
+  <a class="nav-item" href="#">📥 All Articles</a>
+  <a class="nav-item active" href="#">🖍 Highlights</a>
+  <div class="nav-section">Topics</div>
+  <div class="tag-item"># ai-hardware <span class="tag-count">3</span></div>
+  <div class="tag-item"># parenting <span class="tag-count">1</span></div>
+  <div class="tag-item"># game-development <span class="tag-count">2</span></div>
+  <div class="tag-item"># data-privacy <span class="tag-count">2</span></div>
+  <div class="tag-item"># ai-development <span class="tag-count">2</span></div>
+</aside>
+
+<!-- Main content -->
+<div class="main">
+  <div class="header">
+    <h1>Highlights</h1>
+    <div class="header-meta">27 insights · 9 articles</div>
+  </div>
+
+  <!-- Chips for tag filter — clicking a tag switches to roundtable view -->
+  <div class="chips" id="chips">
+    <span class="chip active" onclick="showAll()">All</span>
+    <span class="chip" onclick="showTopic('ai-hardware')">ai-hardware</span>
+    <span class="chip" onclick="showTopic('game-dev')">game-development</span>
+    <span class="chip" onclick="showTopic('parenting')">parenting</span>
+  </div>
+
+  <!-- ===== View: All — 极简笔记流 ===== -->
+  <div class="view-all" id="view-all">
+
+    <div class="article-group">
+      <div class="article-header">
+        <div class="source-icon">💬</div>
+        <span class="article-title">Plaud 爆火后，YoooClaw 要改写 AI 硬件的剧本</span>
+        <span class="article-time">1 day ago</span>
+      </div>
+      <div class="highlight">
+        <div class="highlight-bar"></div>
+        <div>
+          <div class="highlight-text">AI 硬件的核心竞争力不在于形态和参数，而在于提供高质量的个人上下文——连接用户的高频信息和 AI 的处理能力，形成个性化的决策辅助</div>
+          <div class="highlight-tags"><span class="highlight-tag">ai-hardware</span></div>
+        </div>
+      </div>
+      <div class="highlight">
+        <div class="highlight-bar"></div>
+        <div>
+          <div class="highlight-text">数据主权将成为 AI 时代的核心议题——用户数据应该留在设备端，而非上传云端被平台垄断</div>
+          <div class="highlight-tags"><span class="highlight-tag">data-privacy</span></div>
+        </div>
+      </div>
+      <div class="highlight">
+        <div class="highlight-bar"></div>
+        <div>
+          <div class="highlight-text">把"通知流"变成"决策流"：不是简单推送信息，而是帮用户从繁杂通知中提炼可行动的结论</div>
+          <div class="highlight-tags"><span class="highlight-tag">ai-hardware</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="article-group">
+      <div class="article-header">
+        <div class="source-icon">💬</div>
+        <span class="article-title">VAST 完成 5000 万美元 A 轮融资</span>
+        <span class="article-time">1 day ago</span>
+      </div>
+      <div class="highlight">
+        <div class="highlight-bar"></div>
+        <div>
+          <div class="highlight-text">AI 3D 大模型能在 2 秒内产出专业建模师级别的 3D 资产——生产效率的质变意味着 UGC 3D 内容平台的可行性</div>
+          <div class="highlight-tags"><span class="highlight-tag">game-development</span></div>
+        </div>
+      </div>
+      <div class="highlight">
+        <div class="highlight-bar"></div>
+        <div>
+          <div class="highlight-text">世界模型 + UGC 是下一代互动内容的方向：让每个人都能创作、体验和分享 3D 互动内容</div>
+          <div class="highlight-tags"><span class="highlight-tag">ai-hardware</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="article-group">
+      <div class="article-header">
+        <div class="source-icon">🔖</div>
+        <span class="article-title">去踏青，她总有自己的野路子😅</span>
+        <span class="article-time">1 day ago</span>
+      </div>
+      <div class="highlight">
+        <div class="highlight-bar"></div>
+        <div>
+          <div class="highlight-text">孩子在户外的自主探索远比大人规划的"标准玩法"更有创造力——放手让孩子用自己的方式感受自然</div>
+          <div class="highlight-tags"><span class="highlight-tag">parenting</span></div>
+        </div>
+      </div>
+      <div class="highlight">
+        <div class="highlight-bar"></div>
+        <div>
+          <div class="highlight-text">记录的价值不在于完美构图，而在于捕捉当下的真实情绪——孩子的可爱和家长的感动才是最值得留存的</div>
+          <div class="highlight-tags"><span class="highlight-tag">parenting</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="article-group">
+      <div class="article-header">
+        <div class="source-icon">💬</div>
+        <span class="article-title">How I built LennyRPG</span>
+        <span class="article-time">1 day ago</span>
+      </div>
+      <div class="highlight">
+        <div class="highlight-bar"></div>
+        <div>
+          <div class="highlight-text">AI 游戏开发的关键不是技术炫技，而是找到 AI 能力和游戏乐趣的交叉点——用 AI 生成个性化叙事而非替代玩家决策</div>
+          <div class="highlight-tags"><span class="highlight-tag">game-development</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== View: AI Hardware 圆桌 ===== -->
+  <div class="view-topic" id="view-ai-hardware">
+    <div class="back-link" onclick="showAll()">← 返回全部</div>
+
+    <div class="roundtable-banner">
+      <div class="roundtable-topic-label"># ai-hardware</div>
+      <div class="roundtable-title">AI 硬件的下一步该怎么走？</div>
+      <div class="roundtable-subtitle">来自 3 篇文章的 5 条洞察</div>
+      <div class="participants">
+        <div class="participant-avatar bg-green">💬</div>
+        <div class="participant-avatar bg-blue" style="margin-left:-6px;">💬</div>
+        <span class="participant-label">YoooClaw · VAST</span>
+      </div>
+    </div>
+
+    <div class="thread">
+      <div class="voice">
+        <div class="voice-avatar bg-green">💬</div>
+        <div class="voice-body">
+          <div class="voice-source">
+            <span class="voice-source-title">Plaud 爆火后，YoooClaw 要改写 AI 硬件的剧本</span>
+            <span class="voice-time">1d ago</span>
+          </div>
+          <div class="voice-text">AI 硬件的核心竞争力不在于形态和参数，而在于提供<em>高质量的个人上下文</em>——连接用户的高频信息和 AI 的处理能力，形成个性化的决策辅助</div>
+        </div>
+      </div>
+
+      <div class="connection"><div class="connection-line">进一步延伸</div></div>
+
+      <div class="voice">
+        <div class="voice-avatar bg-green">💬</div>
+        <div class="voice-body">
+          <div class="voice-source">
+            <span class="voice-source-title">Plaud 爆火后，YoooClaw 要改写 AI 硬件的剧本</span>
+            <span class="voice-time">1d ago</span>
+          </div>
+          <div class="voice-text">把"通知流"变成<em>"决策流"</em>：不是简单推送信息，而是帮用户从繁杂通知中提炼可行动的结论</div>
+        </div>
+      </div>
+
+      <div class="connection"><div class="connection-line">不同视角</div></div>
+
+      <div class="voice">
+        <div class="voice-avatar bg-blue">💬</div>
+        <div class="voice-body">
+          <div class="voice-source">
+            <span class="voice-source-title">VAST 完成 5000 万美元 A 轮融资</span>
+            <span class="voice-time">1d ago</span>
+          </div>
+          <div class="voice-text">世界模型 + UGC 是下一代互动内容的方向——硬件的价值在于承载<em>沉浸式交互</em></div>
+        </div>
+      </div>
+
+      <div class="connection"><div class="connection-line">底层共识</div></div>
+
+      <div class="voice">
+        <div class="voice-avatar bg-green">💬</div>
+        <div class="voice-body">
+          <div class="voice-source">
+            <span class="voice-source-title">Plaud 爆火后，YoooClaw 要改写 AI 硬件的剧本</span>
+            <span class="voice-time">1d ago</span>
+          </div>
+          <div class="voice-text">数据主权将成为 AI 时代的核心议题——用户数据应该留在<em>设备端</em>，而非上传云端被平台垄断</div>
+        </div>
+      </div>
+
+      <div class="synthesis">
+        <div class="synthesis-label">✦ Takeaway</div>
+        <div class="synthesis-text">AI 硬件竞争正在从"参数军备赛"转向"上下文质量"之争。赢家不是做最强芯片的人，而是最懂如何把用户的信息流变成决策流、同时守住数据主权的人。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== View: Game Development 圆桌 ===== -->
+  <div class="view-topic" id="view-game-dev">
+    <div class="back-link" onclick="showAll()">← 返回全部</div>
+
+    <div class="roundtable-banner">
+      <div class="roundtable-topic-label"># game-development</div>
+      <div class="roundtable-title">AI 如何改变游戏开发？</div>
+      <div class="roundtable-subtitle">来自 2 篇文章的 3 条洞察</div>
+      <div class="participants">
+        <div class="participant-avatar bg-blue">💬</div>
+        <div class="participant-avatar bg-purple" style="margin-left:-6px;">💬</div>
+        <span class="participant-label">VAST · LennyRPG</span>
+      </div>
+    </div>
+
+    <div class="thread">
+      <div class="voice">
+        <div class="voice-avatar bg-blue">💬</div>
+        <div class="voice-body">
+          <div class="voice-source">
+            <span class="voice-source-title">VAST 完成 5000 万美元 A 轮融资</span>
+            <span class="voice-time">1d ago</span>
+          </div>
+          <div class="voice-text">AI 3D 大模型能在 <em>2 秒内</em>产出专业建模师级别的 3D 资产——生产效率的质变意味着 UGC 3D 内容平台的可行性</div>
+        </div>
+      </div>
+
+      <div class="connection"><div class="connection-line">另一个角度</div></div>
+
+      <div class="voice">
+        <div class="voice-avatar bg-purple">💬</div>
+        <div class="voice-body">
+          <div class="voice-source">
+            <span class="voice-source-title">How I built LennyRPG</span>
+            <span class="voice-time">1d ago</span>
+          </div>
+          <div class="voice-text">AI 游戏开发的关键不是技术炫技，而是找到 <em>AI 能力和游戏乐趣的交叉点</em>——用 AI 生成个性化叙事而非替代玩家决策</div>
+        </div>
+      </div>
+
+      <div class="synthesis">
+        <div class="synthesis-label">✦ Takeaway</div>
+        <div class="synthesis-text">AI 在游戏领域的价值分两层：底层是生产力革命（2 秒出 3D 资产），上层是体验革命（个性化叙事）。核心约束没变——技术服务于乐趣，不是替代乐趣。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== View: Parenting 圆桌 ===== -->
+  <div class="view-topic" id="view-parenting">
+    <div class="back-link" onclick="showAll()">← 返回全部</div>
+
+    <div class="roundtable-banner">
+      <div class="roundtable-topic-label"># parenting</div>
+      <div class="roundtable-title">孩子的世界，大人学不来</div>
+      <div class="roundtable-subtitle">来自 1 篇文章的 2 条洞察</div>
+      <div class="participants">
+        <div class="participant-avatar bg-rose">🔖</div>
+        <span class="participant-label">去踏青</span>
+      </div>
+    </div>
+
+    <div class="thread">
+      <div class="voice">
+        <div class="voice-avatar bg-rose">🔖</div>
+        <div class="voice-body">
+          <div class="voice-source">
+            <span class="voice-source-title">去踏青，她总有自己的野路子😅</span>
+            <span class="voice-time">1d ago</span>
+          </div>
+          <div class="voice-text">孩子在户外的自主探索远比大人规划的"标准玩法"更有创造力——<em>放手</em>让孩子用自己的方式感受自然</div>
+        </div>
+      </div>
+
+      <div class="voice">
+        <div class="voice-avatar bg-rose">🔖</div>
+        <div class="voice-body">
+          <div class="voice-source">
+            <span class="voice-source-title">去踏青，她总有自己的野路子😅</span>
+            <span class="voice-time">1d ago</span>
+          </div>
+          <div class="voice-text">记录的价值不在于完美构图，而在于捕捉<em>当下的真实情绪</em>——孩子的可爱和家长的感动才是最值得留存的</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  function showAll() {
+    document.getElementById('view-all').style.display = 'block';
+    document.querySelectorAll('.view-topic').forEach(v => v.classList.remove('active'));
+    document.querySelectorAll('.view-topic').forEach(v => v.style.display = 'none');
+    // Reset chips
+    document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+    document.querySelectorAll('.chip')[0].classList.add('active');
+  }
+
+  function showTopic(topic) {
+    document.getElementById('view-all').style.display = 'none';
+    document.querySelectorAll('.view-topic').forEach(v => v.style.display = 'none');
+    const target = document.getElementById('view-' + topic);
+    if (target) {
+      target.style.display = 'block';
+      target.classList.add('active');
+    }
+    // Update chips
+    document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+    event.target.classList.add('active');
+  }
+</script>
+
+</body>
+</html>

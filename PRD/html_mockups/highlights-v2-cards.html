@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Highlights — 方向 B: 结构化知识卡片</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', -apple-system, 'Helvetica Neue', sans-serif; background: #f9fafb; color: #1a1a1a; display: flex; height: 100vh; }
+
+  /* Sidebar */
+  .sidebar { width: 220px; flex-shrink: 0; border-right: 1px solid #f0f0f0; background: #fafafa; display: flex; flex-direction: column; padding: 16px 0; }
+  .logo { padding: 0 16px 12px; display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; }
+  .logo-icon { width: 28px; height: 28px; border-radius: 8px; background: #18181b; display: flex; align-items: center; justify-content: center; color: white; font-size: 14px; }
+  .nav-item { display: flex; align-items: center; gap: 8px; padding: 8px 16px; font-size: 13px; color: #888; cursor: pointer; transition: all 0.15s; text-decoration: none; }
+  .nav-item:hover { color: #1a1a1a; background: #f0f0f0; }
+  .nav-item.active { color: #1a1a1a; background: #ececec; font-weight: 500; }
+  .nav-section { padding: 16px 16px 6px; font-size: 10px; font-weight: 600; color: #aaa; text-transform: uppercase; letter-spacing: 0.05em; }
+  .tag-item { display: flex; align-items: center; gap: 8px; padding: 5px 16px; font-size: 13px; color: #888; cursor: pointer; }
+  .tag-item:hover { color: #1a1a1a; }
+  .tag-count { font-size: 10px; color: #bbb; margin-left: auto; }
+
+  /* Main */
+  .main { flex: 1; overflow-y: auto; }
+  .header { padding: 24px 32px 16px; border-bottom: 1px solid #f0f0f0; }
+  .header h1 { font-size: 18px; font-weight: 600; letter-spacing: -0.02em; }
+  .header-meta { font-size: 12px; color: #999; margin-top: 2px; }
+
+  /* Tag chips */
+  .chips { display: flex; gap: 6px; padding: 16px 32px 0; flex-wrap: wrap; }
+  .chip { padding: 4px 12px; border-radius: 100px; font-size: 12px; background: #f0f0f0; color: #666; cursor: pointer; transition: all 0.15s; border: 1px solid transparent; }
+  .chip:hover { background: #e8e8e8; color: #333; }
+  .chip.active { background: #1a1a1a; color: #fff; }
+
+  /* Random resurface */
+  .resurface { margin: 20px 32px 0; padding: 20px; background: #fefce8; border-radius: 12px; border: 1px solid #fef08a; }
+  .resurface-label { font-size: 11px; font-weight: 600; color: #a16207; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+  .resurface-text { font-size: 14px; line-height: 1.6; color: #713f12; }
+  .resurface-source { font-size: 11px; color: #a16207; margin-top: 8px; }
+  .resurface-actions { display: flex; gap: 8px; margin-top: 12px; }
+  .resurface-btn { font-size: 11px; padding: 4px 10px; border-radius: 6px; border: 1px solid #e0c77a; background: transparent; color: #92400e; cursor: pointer; }
+  .resurface-btn:hover { background: #fef9c3; }
+
+  /* Content */
+  .content { padding: 20px 32px; max-width: 720px; }
+
+  /* Article card */
+  .article-card { background: #fff; border: 1px solid #f0f0f0; border-radius: 12px; padding: 20px; margin-bottom: 16px; transition: box-shadow 0.15s; }
+  .article-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+  .card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid #f5f5f5; }
+  .source-icon { width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; background: #f0f0f0; }
+  .card-title { font-size: 13px; font-weight: 500; color: #1a1a1a; flex: 1; cursor: pointer; }
+  .card-title:hover { color: #2563eb; }
+  .card-time { font-size: 11px; color: #ccc; }
+  .card-tags { display: flex; gap: 4px; margin-top: 2px; }
+  .card-tag { font-size: 10px; color: #888; background: #f5f5f5; padding: 2px 8px; border-radius: 4px; }
+
+  /* Highlight in card */
+  .card-highlights { list-style: none; }
+  .card-highlight { padding: 8px 0; font-size: 13.5px; line-height: 1.6; color: #444; display: flex; gap: 10px; align-items: flex-start; }
+  .card-highlight + .card-highlight { border-top: 1px solid #fafafa; }
+  .bullet { width: 6px; height: 6px; border-radius: 50%; background: #d4d4d4; flex-shrink: 0; margin-top: 8px; }
+  .highlight-count { font-size: 11px; color: #bbb; margin-top: 4px; }
+
+  /* Description panel */
+  .desc-panel { position: fixed; right: 0; top: 0; width: 300px; height: 100vh; background: #fff; border-left: 1px solid #f0f0f0; padding: 32px 24px; font-size: 13px; color: #666; line-height: 1.7; }
+  .desc-panel h3 { font-size: 15px; color: #1a1a1a; font-weight: 600; margin-bottom: 12px; }
+  .desc-panel .label { font-size: 11px; color: #aaa; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 20px; margin-bottom: 6px; }
+  .desc-panel ul { padding-left: 16px; }
+  .desc-panel li { margin-bottom: 4px; }
+</style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<aside class="sidebar">
+  <div class="logo">
+    <div class="logo-icon">✦</div>
+    InfoFlow
+  </div>
+  <a class="nav-item" href="#">📥 All Articles</a>
+  <a class="nav-item active" href="#">🖍 Highlights</a>
+  <div class="nav-section">Topics</div>
+  <div class="tag-item"># ai-hardware <span class="tag-count">3</span></div>
+  <div class="tag-item"># parenting <span class="tag-count">1</span></div>
+  <div class="tag-item"># game-development <span class="tag-count">2</span></div>
+  <div class="tag-item"># data-privacy <span class="tag-count">2</span></div>
+  <div class="tag-item"># ai-development <span class="tag-count">2</span></div>
+</aside>
+
+<!-- Main content -->
+<div class="main">
+  <div class="header">
+    <h1>Highlights</h1>
+    <div class="header-meta">27 insights from 9 articles</div>
+  </div>
+
+  <div class="chips">
+    <span class="chip active">All</span>
+    <span class="chip">ai-hardware</span>
+    <span class="chip">game-development</span>
+    <span class="chip">data-privacy</span>
+    <span class="chip">parenting</span>
+    <span class="chip">ai-development</span>
+  </div>
+
+  <!-- Random Resurface -->
+  <div class="resurface">
+    <div class="resurface-label">💡 Random Resurface</div>
+    <div class="resurface-text">AI 硬件的核心竞争力不在于形态和参数，而在于提供高质量的个人上下文——连接用户的高频信息和 AI 的处理能力，形成个性化的决策辅助</div>
+    <div class="resurface-source">from "Plaud 爆火后，YoooClaw 要改写 AI 硬件的剧本"</div>
+    <div class="resurface-actions">
+      <button class="resurface-btn">↻ 换一条</button>
+      <button class="resurface-btn">→ 查看原文</button>
+    </div>
+  </div>
+
+  <div class="content">
+    <!-- Card 1 -->
+    <div class="article-card">
+      <div class="card-header">
+        <div class="source-icon">💬</div>
+        <div style="flex:1">
+          <div class="card-title">Plaud 爆火后，YoooClaw 要改写 AI 硬件的剧本</div>
+          <div class="card-tags">
+            <span class="card-tag">ai-hardware</span>
+            <span class="card-tag">data-privacy</span>
+          </div>
+        </div>
+        <span class="card-time">1 day ago</span>
+      </div>
+      <ul class="card-highlights">
+        <li class="card-highlight">
+          <span class="bullet"></span>
+          AI 硬件的核心竞争力不在于形态和参数，而在于提供高质量的个人上下文——连接用户的高频信息和 AI 的处理能力
+        </li>
+        <li class="card-highlight">
+          <span class="bullet"></span>
+          数据主权将成为 AI 时代的核心议题——用户数据应该留在设备端，而非上传云端被平台垄断
+        </li>
+        <li class="card-highlight">
+          <span class="bullet"></span>
+          把"通知流"变成"决策流"：不是简单推送信息，而是帮用户从繁杂通知中提炼可行动的结论
+        </li>
+      </ul>
+    </div>
+
+    <!-- Card 2 -->
+    <div class="article-card">
+      <div class="card-header">
+        <div class="source-icon">💬</div>
+        <div style="flex:1">
+          <div class="card-title">VAST 完成 5000 万美元 A 轮融资</div>
+          <div class="card-tags">
+            <span class="card-tag">game-development</span>
+            <span class="card-tag">ai-hardware</span>
+          </div>
+        </div>
+        <span class="card-time">1 day ago</span>
+      </div>
+      <ul class="card-highlights">
+        <li class="card-highlight">
+          <span class="bullet"></span>
+          AI 3D 大模型能在 2 秒内产出专业建模师级别的 3D 资产——生产效率的质变意味着 UGC 3D 内容平台的可行性
+        </li>
+        <li class="card-highlight">
+          <span class="bullet"></span>
+          世界模型 + UGC 是下一代互动内容的方向：让每个人都能创作、体验和分享 3D 互动内容
+        </li>
+      </ul>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="article-card">
+      <div class="card-header">
+        <div class="source-icon">🔖</div>
+        <div style="flex:1">
+          <div class="card-title">去踏青，她总有自己的野路子😅</div>
+          <div class="card-tags">
+            <span class="card-tag">parenting</span>
+          </div>
+        </div>
+        <span class="card-time">1 day ago</span>
+      </div>
+      <ul class="card-highlights">
+        <li class="card-highlight">
+          <span class="bullet"></span>
+          孩子在户外的自主探索远比大人规划的"标准玩法"更有创造力——放手让孩子用自己的方式感受自然
+        </li>
+        <li class="card-highlight">
+          <span class="bullet"></span>
+          记录的价值不在于完美构图，而在于捕捉当下的真实情绪
+        </li>
+      </ul>
+    </div>
+
+    <!-- Card 4 -->
+    <div class="article-card">
+      <div class="card-header">
+        <div class="source-icon">💬</div>
+        <div style="flex:1">
+          <div class="card-title">How I built LennyRPG</div>
+          <div class="card-tags">
+            <span class="card-tag">game-development</span>
+            <span class="card-tag">ai-development</span>
+          </div>
+        </div>
+        <span class="card-time">1 day ago</span>
+      </div>
+      <ul class="card-highlights">
+        <li class="card-highlight">
+          <span class="bullet"></span>
+          AI 游戏开发的关键不是技术炫技，而是找到 AI 能力和游戏乐趣的交叉点——用 AI 生成个性化叙事而非替代玩家决策
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- Description panel -->
+<div class="desc-panel">
+  <h3>方向 B: 结构化知识卡片</h3>
+  <p>每篇文章一张卡片，卡片头部显示来源 + 标题 + tags + 时间，内部列出 keyPoints。顶部增加 Random Resurface 模块。</p>
+
+  <div class="label">设计原则</div>
+  <ul>
+    <li>卡片提供清晰的来源上下文</li>
+    <li>结构化便于快速扫描</li>
+    <li>Resurface 模块驱动被动回顾</li>
+  </ul>
+
+  <div class="label">视觉参考</div>
+  <p>Readwise Notebook、Notion Database</p>
+
+  <div class="label">适合场景</div>
+  <p>强调信息结构和来源追溯，适合知识管理型用户</p>
+</div>
+
+</body>
+</html>

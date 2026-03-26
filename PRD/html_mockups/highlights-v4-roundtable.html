@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Highlights — 方向 D: 圆桌讨论</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', -apple-system, 'Helvetica Neue', sans-serif; background: #f9fafb; color: #1a1a1a; display: flex; height: 100vh; }
+
+  /* Sidebar */
+  .sidebar { width: 220px; flex-shrink: 0; border-right: 1px solid #f0f0f0; background: #fafafa; display: flex; flex-direction: column; padding: 16px 0; }
+  .logo { padding: 0 16px 12px; display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; }
+  .logo-icon { width: 28px; height: 28px; border-radius: 8px; background: #18181b; display: flex; align-items: center; justify-content: center; color: white; font-size: 14px; }
+  .nav-item { display: flex; align-items: center; gap: 8px; padding: 8px 16px; font-size: 13px; color: #888; cursor: pointer; transition: all 0.15s; text-decoration: none; }
+  .nav-item:hover { color: #1a1a1a; background: #f0f0f0; }
+  .nav-item.active { color: #1a1a1a; background: #ececec; font-weight: 500; }
+  .nav-section { padding: 16px 16px 6px; font-size: 10px; font-weight: 600; color: #aaa; text-transform: uppercase; letter-spacing: 0.05em; }
+  .tag-item { display: flex; align-items: center; gap: 8px; padding: 5px 16px; font-size: 13px; color: #888; cursor: pointer; }
+  .tag-item:hover { color: #1a1a1a; }
+  .tag-count { font-size: 10px; color: #bbb; margin-left: auto; }
+
+  /* Main */
+  .main { flex: 1; overflow-y: auto; }
+  .header { padding: 28px 40px 20px; }
+  .header h1 { font-size: 20px; font-weight: 600; letter-spacing: -0.02em; }
+  .header-meta { font-size: 12px; color: #999; margin-top: 3px; }
+
+  /* Content */
+  .content { padding: 0 40px 48px; max-width: 780px; }
+
+  /* Roundtable topic */
+  .roundtable { margin-bottom: 48px; }
+  .roundtable-header { margin-bottom: 20px; }
+  .roundtable-topic { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #999; margin-bottom: 4px; }
+  .roundtable-title { font-size: 17px; font-weight: 600; color: #1a1a1a; letter-spacing: -0.01em; }
+  .roundtable-subtitle { font-size: 13px; color: #999; margin-top: 4px; }
+
+  /* Participants bar */
+  .participants { display: flex; align-items: center; gap: 4px; margin-top: 12px; }
+  .participant-avatar { width: 24px; height: 24px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 11px; border: 2px solid #fff; }
+  .participant-label { font-size: 11px; color: #bbb; margin-left: 4px; }
+
+  /* Discussion thread */
+  .thread { position: relative; padding-left: 0; }
+
+  /* Voice — each highlight as a "contribution" */
+  .voice { display: flex; gap: 12px; padding: 16px 0; position: relative; }
+  .voice + .voice { border-top: 1px solid #f5f5f5; }
+
+  .voice-avatar { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; margin-top: 2px; }
+
+  .voice-body { flex: 1; min-width: 0; }
+  .voice-source { font-size: 12px; font-weight: 500; color: #666; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
+  .voice-source-title { cursor: pointer; }
+  .voice-source-title:hover { color: #1a1a1a; }
+  .voice-time { font-size: 10px; color: #ccc; font-weight: 400; }
+
+  .voice-text { font-size: 14px; line-height: 1.65; color: #2a2a2a; }
+  .voice-text em { font-style: normal; background: linear-gradient(to bottom, transparent 60%, #fef08a 60%); }
+
+  .voice-tags { display: flex; gap: 4px; margin-top: 8px; }
+  .voice-tag { font-size: 10px; color: #aaa; background: #f5f5f5; padding: 2px 7px; border-radius: 4px; }
+
+  /* Connection line between related voices */
+  .connection { padding: 4px 0 4px 44px; }
+  .connection-line { display: flex; align-items: center; gap: 8px; font-size: 11px; color: #ccc; }
+  .connection-line::before { content: ''; width: 20px; height: 1px; background: #e5e5e5; }
+  .connection-line::after { content: ''; flex: 1; height: 1px; background: #e5e5e5; }
+
+  /* Synthesis / takeaway */
+  .synthesis { margin-top: 16px; padding: 16px 20px; background: #f8faf9; border-radius: 10px; border: 1px solid #e8f0ec; }
+  .synthesis-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: #6b9e82; margin-bottom: 8px; display: flex; align-items: center; gap: 5px; }
+  .synthesis-text { font-size: 13px; line-height: 1.6; color: #3d5a4a; }
+
+  /* Color palette for sources */
+  .bg-green { background: #dcfce7; }
+  .bg-blue { background: #dbeafe; }
+  .bg-amber { background: #fef3c7; }
+  .bg-purple { background: #f3e8ff; }
+  .bg-rose { background: #ffe4e6; }
+  .bg-cyan { background: #cffafe; }
+
+  /* Divider */
+  .topic-divider { height: 1px; background: linear-gradient(to right, #e5e5e5 0%, transparent 100%); margin-bottom: 48px; }
+</style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<aside class="sidebar">
+  <div class="logo">
+    <div class="logo-icon">✦</div>
+    InfoFlow
+  </div>
+  <a class="nav-item" href="#">📥 All Articles</a>
+  <a class="nav-item active" href="#">🖍 Highlights</a>
+  <div class="nav-section">Topics</div>
+  <div class="tag-item"># ai-hardware <span class="tag-count">3</span></div>
+  <div class="tag-item"># parenting <span class="tag-count">1</span></div>
+  <div class="tag-item"># game-development <span class="tag-count">2</span></div>
+  <div class="tag-item"># data-privacy <span class="tag-count">2</span></div>
+  <div class="tag-item"># ai-development <span class="tag-count">2</span></div>
+</aside>
+
+<!-- Main content -->
+<div class="main">
+  <div class="header">
+    <h1>Highlights</h1>
+    <div class="header-meta">27 insights · 9 articles · 5 roundtables</div>
+  </div>
+
+  <div class="content">
+
+    <!-- Roundtable 1: AI Hardware -->
+    <div class="roundtable">
+      <div class="roundtable-header">
+        <div class="roundtable-topic"># ai-hardware</div>
+        <div class="roundtable-title">AI 硬件的下一步该怎么走？</div>
+        <div class="roundtable-subtitle">来自 3 篇文章的 5 条洞察</div>
+        <div class="participants">
+          <div class="participant-avatar bg-green">💬</div>
+          <div class="participant-avatar bg-blue" style="margin-left: -6px;">💬</div>
+          <div class="participant-avatar bg-amber" style="margin-left: -6px;">💬</div>
+          <span class="participant-label">YoooClaw · VAST · LennyRPG</span>
+        </div>
+      </div>
+
+      <div class="thread">
+        <div class="voice">
+          <div class="voice-avatar bg-green">💬</div>
+          <div class="voice-body">
+            <div class="voice-source">
+              <span class="voice-source-title">Plaud 爆火后，YoooClaw 要改写 AI 硬件的剧本</span>
+              <span class="voice-time">1d ago</span>
+            </div>
+            <div class="voice-text">AI 硬件的核心竞争力不在于形态和参数，而在于提供<em>高质量的个人上下文</em>——连接用户的高频信息和 AI 的处理能力，形成个性化的决策辅助</div>
+          </div>
+        </div>
+
+        <div class="connection">
+          <div class="connection-line">进一步延伸</div>
+        </div>
+
+        <div class="voice">
+          <div class="voice-avatar bg-green">💬</div>
+          <div class="voice-body">
+            <div class="voice-source">
+              <span class="voice-source-title">Plaud 爆火后，YoooClaw 要改写 AI 硬件的剧本</span>
+              <span class="voice-time">1d ago</span>
+            </div>
+            <div class="voice-text">把"通知流"变成<em>"决策流"</em>：不是简单推送信息，而是帮用户从繁杂通知中提炼可行动的结论</div>
+          </div>
+        </div>
+
+        <div class="connection">
+          <div class="connection-line">不同视角</div>
+        </div>
+
+        <div class="voice">
+          <div class="voice-avatar bg-blue">💬</div>
+          <div class="voice-body">
+            <div class="voice-source">
+              <span class="voice-source-title">VAST 完成 5000 万美元 A 轮融资</span>
+              <span class="voice-time">1d ago</span>
+            </div>
+            <div class="voice-text">世界模型 + UGC 是下一代互动内容的方向：让每个人都能创作、体验和分享 3D 互动内容——硬件的价值在于承载<em>沉浸式交互</em></div>
+          </div>
+        </div>
+
+        <div class="connection">
+          <div class="connection-line">底层共识</div>
+        </div>
+
+        <div class="voice">
+          <div class="voice-avatar bg-green">💬</div>
+          <div class="voice-body">
+            <div class="voice-source">
+              <span class="voice-source-title">Plaud 爆火后，YoooClaw 要改写 AI 硬件的剧本</span>
+              <span class="voice-time">1d ago</span>
+            </div>
+            <div class="voice-text">数据主权将成为 AI 时代的核心议题——用户数据应该留在<em>设备端</em>，而非上传云端被平台垄断</div>
+          </div>
+        </div>
+
+        <div class="synthesis">
+          <div class="synthesis-label">✦ Takeaway</div>
+          <div class="synthesis-text">AI 硬件竞争正在从"参数军备赛"转向"上下文质量"之争。赢家不是做最强芯片的人，而是最懂如何把用户的信息流变成决策流、同时守住数据主权的人。</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="topic-divider"></div>
+
+    <!-- Roundtable 2: Game Development -->
+    <div class="roundtable">
+      <div class="roundtable-header">
+        <div class="roundtable-topic"># game-development</div>
+        <div class="roundtable-title">AI 如何改变游戏开发？</div>
+        <div class="roundtable-subtitle">来自 2 篇文章的 3 条洞察</div>
+        <div class="participants">
+          <div class="participant-avatar bg-blue">💬</div>
+          <div class="participant-avatar bg-purple" style="margin-left: -6px;">💬</div>
+          <span class="participant-label">VAST · LennyRPG</span>
+        </div>
+      </div>
+
+      <div class="thread">
+        <div class="voice">
+          <div class="voice-avatar bg-blue">💬</div>
+          <div class="voice-body">
+            <div class="voice-source">
+              <span class="voice-source-title">VAST 完成 5000 万美元 A 轮融资</span>
+              <span class="voice-time">1d ago</span>
+            </div>
+            <div class="voice-text">AI 3D 大模型能在 <em>2 秒内</em>产出专业建模师级别的 3D 资产——生产效率的质变意味着 UGC 3D 内容平台的可行性</div>
+          </div>
+        </div>
+
+        <div class="connection">
+          <div class="connection-line">另一个角度</div>
+        </div>
+
+        <div class="voice">
+          <div class="voice-avatar bg-purple">💬</div>
+          <div class="voice-body">
+            <div class="voice-source">
+              <span class="voice-source-title">How I built LennyRPG</span>
+              <span class="voice-time">1d ago</span>
+            </div>
+            <div class="voice-text">AI 游戏开发的关键不是技术炫技，而是找到 <em>AI 能力和游戏乐趣的交叉点</em>——用 AI 生成个性化叙事而非替代玩家决策</div>
+          </div>
+        </div>
+
+        <div class="synthesis">
+          <div class="synthesis-label">✦ Takeaway</div>
+          <div class="synthesis-text">AI 在游戏领域的价值分两层：底层是生产力革命（2 秒出 3D 资产），上层是体验革命（个性化叙事）。但核心约束没变——技术服务于乐趣，不是替代乐趣。</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="topic-divider"></div>
+
+    <!-- Roundtable 3: Parenting -->
+    <div class="roundtable">
+      <div class="roundtable-header">
+        <div class="roundtable-topic"># parenting</div>
+        <div class="roundtable-title">孩子的世界，大人学不来</div>
+        <div class="roundtable-subtitle">来自 1 篇文章的 2 条洞察</div>
+        <div class="participants">
+          <div class="participant-avatar bg-rose">🔖</div>
+          <span class="participant-label">去踏青</span>
+        </div>
+      </div>
+
+      <div class="thread">
+        <div class="voice">
+          <div class="voice-avatar bg-rose">🔖</div>
+          <div class="voice-body">
+            <div class="voice-source">
+              <span class="voice-source-title">去踏青，她总有自己的野路子😅</span>
+              <span class="voice-time">1d ago</span>
+            </div>
+            <div class="voice-text">孩子在户外的自主探索远比大人规划的"标准玩法"更有创造力——<em>放手</em>让孩子用自己的方式感受自然</div>
+          </div>
+        </div>
+
+        <div class="voice">
+          <div class="voice-avatar bg-rose">🔖</div>
+          <div class="voice-body">
+            <div class="voice-source">
+              <span class="voice-source-title">去踏青，她总有自己的野路子😅</span>
+              <span class="voice-time">1d ago</span>
+            </div>
+            <div class="voice-text">记录的价值不在于完美构图，而在于捕捉<em>当下的真实情绪</em>——孩子的可爱和家长的感动才是最值得留存的</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

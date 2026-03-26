@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Highlights — 方向 A: 极简笔记流</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', -apple-system, 'Helvetica Neue', sans-serif; background: #f9fafb; color: #1a1a1a; display: flex; height: 100vh; }
+
+  /* Sidebar */
+  .sidebar { width: 220px; flex-shrink: 0; border-right: 1px solid #f0f0f0; background: #fafafa; display: flex; flex-direction: column; padding: 16px 0; }
+  .logo { padding: 0 16px 12px; display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; }
+  .logo-icon { width: 28px; height: 28px; border-radius: 8px; background: #18181b; display: flex; align-items: center; justify-content: center; color: white; font-size: 14px; }
+  .nav-item { display: flex; align-items: center; gap: 8px; padding: 8px 16px; font-size: 13px; color: #888; cursor: pointer; transition: all 0.15s; text-decoration: none; }
+  .nav-item:hover { color: #1a1a1a; background: #f0f0f0; }
+  .nav-item.active { color: #1a1a1a; background: #ececec; font-weight: 500; }
+  .nav-section { padding: 16px 16px 6px; font-size: 10px; font-weight: 600; color: #aaa; text-transform: uppercase; letter-spacing: 0.05em; }
+  .tag-item { display: flex; align-items: center; gap: 8px; padding: 5px 16px; font-size: 13px; color: #888; cursor: pointer; }
+  .tag-item:hover { color: #1a1a1a; }
+  .tag-count { font-size: 10px; color: #bbb; margin-left: auto; }
+
+  /* Main */
+  .main { flex: 1; overflow-y: auto; }
+  .header { padding: 24px 32px 16px; border-bottom: 1px solid #f0f0f0; }
+  .header h1 { font-size: 18px; font-weight: 600; letter-spacing: -0.02em; }
+  .header-meta { font-size: 12px; color: #999; margin-top: 2px; }
+
+  /* Tag chips */
+  .chips { display: flex; gap: 6px; padding: 16px 32px 0; flex-wrap: wrap; }
+  .chip { padding: 4px 12px; border-radius: 100px; font-size: 12px; background: #f0f0f0; color: #666; cursor: pointer; transition: all 0.15s; border: 1px solid transparent; }
+  .chip:hover { background: #e8e8e8; color: #333; }
+  .chip.active { background: #1a1a1a; color: #fff; }
+
+  /* Content */
+  .content { padding: 24px 32px; max-width: 680px; }
+
+  /* Article group */
+  .article-group { margin-bottom: 32px; }
+  .article-header { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+  .source-icon { width: 20px; height: 20px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 11px; background: #f0f0f0; }
+  .article-title { font-size: 12px; color: #999; font-weight: 400; cursor: pointer; transition: color 0.15s; }
+  .article-title:hover { color: #1a1a1a; }
+  .article-time { font-size: 11px; color: #ccc; margin-left: auto; }
+
+  /* Highlight item */
+  .highlight { display: flex; gap: 12px; padding: 8px 0; }
+  .highlight-bar { width: 3px; border-radius: 2px; background: #e5e5e5; flex-shrink: 0; }
+  .highlight-text { font-size: 14px; line-height: 1.65; color: #333; }
+  .highlight + .highlight { border-top: none; }
+
+  /* Tags on highlight */
+  .highlight-tags { display: flex; gap: 4px; margin-top: 6px; }
+  .highlight-tag { font-size: 10px; color: #aaa; background: #f5f5f5; padding: 1px 6px; border-radius: 4px; }
+
+  /* Description panel */
+  .desc-panel { position: fixed; right: 0; top: 0; width: 300px; height: 100vh; background: #fff; border-left: 1px solid #f0f0f0; padding: 32px 24px; font-size: 13px; color: #666; line-height: 1.7; }
+  .desc-panel h3 { font-size: 15px; color: #1a1a1a; font-weight: 600; margin-bottom: 12px; }
+  .desc-panel .label { font-size: 11px; color: #aaa; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 20px; margin-bottom: 6px; }
+  .desc-panel ul { padding-left: 16px; }
+  .desc-panel li { margin-bottom: 4px; }
+</style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<aside class="sidebar">
+  <div class="logo">
+    <div class="logo-icon">✦</div>
+    InfoFlow
+  </div>
+  <a class="nav-item" href="#">📥 All Articles</a>
+  <a class="nav-item active" href="#">🖍 Highlights</a>
+  <div class="nav-section">Topics</div>
+  <div class="tag-item"># ai-hardware <span class="tag-count">3</span></div>
+  <div class="tag-item"># parenting <span class="tag-count">1</span></div>
+  <div class="tag-item"># game-development <span class="tag-count">2</span></div>
+  <div class="tag-item"># data-privacy <span class="tag-count">2</span></div>
+  <div class="tag-item"># ai-development <span class="tag-count">2</span></div>
+</aside>
+
+<!-- Main content -->
+<div class="main">
+  <div class="header">
+    <h1>Highlights</h1>
+    <div class="header-meta">27 insights from 9 articles</div>
+  </div>
+
+  <div class="chips">
+    <span class="chip active">All</span>
+    <span class="chip">ai-hardware</span>
+    <span class="chip">game-development</span>
+    <span class="chip">data-privacy</span>
+    <span class="chip">parenting</span>
+    <span class="chip">ai-development</span>
+  </div>
+
+  <div class="content">
+    <!-- Article group 1 -->
+    <div class="article-group">
+      <div class="article-header">
+        <div class="source-icon">💬</div>
+        <span class="article-title">Plaud 爆火后，YoooClaw 要改写 AI 硬件的剧本</span>
+        <span class="article-time">1 day ago</span>
+      </div>
+
+      <div class="highlight">
+        <div class="highlight-bar"></div>
+        <div>
+          <div class="highlight-text">AI 硬件的核心竞争力不在于形态和参数，而在于提供高质量的个人上下文——连接用户的高频信息和 AI 的处理能力，形成个性化的决策辅助</div>
+          <div class="highlight-tags">
+            <span class="highlight-tag">ai-hardware</span>
+            <span class="highlight-tag">data-privacy</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="highlight">
+        <div class="highlight-bar"></div>
+        <div>
+          <div class="highlight-text">数据主权将成为 AI 时代的核心议题——用户数据应该留在设备端，而非上传云端被平台垄断</div>
+          <div class="highlight-tags">
+            <span class="highlight-tag">data-privacy</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="highlight">
+        <div class="highlight-bar"></div>
+        <div>
+          <div class="highlight-text">把"通知流"变成"决策流"：不是简单推送信息，而是帮用户从繁杂通知中提炼可行动的结论</div>
+          <div class="highlight-tags">
+            <span class="highlight-tag">ai-hardware</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Article group 2 -->
+    <div class="article-group">
+      <div class="article-header">
+        <div class="source-icon">💬</div>
+        <span class="article-title">VAST 完成 5000 万美元 A 轮融资</span>
+        <span class="article-time">1 day ago</span>
+      </div>
+
+      <div class="highlight">
+        <div class="highlight-bar"></div>
+        <div>
+          <div class="highlight-text">AI 3D 大模型能在 2 秒内产出专业建模师级别的 3D 资产——生产效率的质变意味着 UGC 3D 内容平台的可行性</div>
+          <div class="highlight-tags">
+            <span class="highlight-tag">game-development</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="highlight">
+        <div class="highlight-bar"></div>
+        <div>
+          <div class="highlight-text">世界模型 + UGC 是下一代互动内容的方向：让每个人都能创作、体验和分享 3D 互动内容</div>
+          <div class="highlight-tags">
+            <span class="highlight-tag">ai-hardware</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Article group 3 -->
+    <div class="article-group">
+      <div class="article-header">
+        <div class="source-icon">🔖</div>
+        <span class="article-title">去踏青，她总有自己的野路子😅</span>
+        <span class="article-time">1 day ago</span>
+      </div>
+
+      <div class="highlight">
+        <div class="highlight-bar"></div>
+        <div>
+          <div class="highlight-text">孩子在户外的自主探索远比大人规划的"标准玩法"更有创造力——放手让孩子用自己的方式感受自然</div>
+          <div class="highlight-tags">
+            <span class="highlight-tag">parenting</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="highlight">
+        <div class="highlight-bar"></div>
+        <div>
+          <div class="highlight-text">记录的价值不在于完美构图，而在于捕捉当下的真实情绪——孩子的可爱和家长的感动才是最值得留存的</div>
+          <div class="highlight-tags">
+            <span class="highlight-tag">parenting</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Article group 4 -->
+    <div class="article-group">
+      <div class="article-header">
+        <div class="source-icon">💬</div>
+        <span class="article-title">How I built LennyRPG</span>
+        <span class="article-time">1 day ago</span>
+      </div>
+
+      <div class="highlight">
+        <div class="highlight-bar"></div>
+        <div>
+          <div class="highlight-text">AI 游戏开发的关键不是技术炫技，而是找到 AI 能力和游戏乐趣的交叉点——用 AI 生成个性化叙事而非替代玩家决策</div>
+          <div class="highlight-tags">
+            <span class="highlight-tag">game-development</span>
+            <span class="highlight-tag">ai-development</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Description panel -->
+<div class="desc-panel">
+  <h3>方向 A: 极简笔记流</h3>
+  <p>以 highlight 文本为绝对主角。左侧 3px 竖线做视觉分隔，大量留白，无卡片边框。文章标题仅作为轻量分组头。</p>
+
+  <div class="label">设计原则</div>
+  <ul>
+    <li>内容是主角，元数据退后</li>
+    <li>留白即层级，减少视觉噪音</li>
+    <li>竖线暗示"笔记摘抄"的隐喻</li>
+  </ul>
+
+  <div class="label">视觉参考</div>
+  <p>Bear 笔记、iA Writer、Instapaper Highlights</p>
+
+  <div class="label">适合场景</div>
+  <p>强调阅读体验和知识沉淀感，适合安静回顾</p>
+</div>
+
+</body>
+</html>
