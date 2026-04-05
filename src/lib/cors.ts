@@ -2,9 +2,11 @@ import { NextResponse } from "next/server";
 
 export function corsHeaders() {
   return {
-    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Origin": process.env.NODE_ENV === "production"
+      ? "https://infoflow-two.vercel.app"
+      : "http://localhost:3000",
     "Access-Control-Allow-Methods": "GET, POST, DELETE, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization",
   };
 }
 

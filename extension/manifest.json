@@ -3,7 +3,7 @@
   "name": "InfoFlow Clipper",
   "version": "0.1.0",
   "description": "Save any web content to InfoFlow",
-  "permissions": ["activeTab", "scripting"],
+  "permissions": ["activeTab", "scripting", "storage"],
   "host_permissions": ["https://infoflow-two.vercel.app/*"],
   "action": {
     "default_popup": "popup.html"
